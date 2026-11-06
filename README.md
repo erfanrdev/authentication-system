@@ -84,7 +84,7 @@ HOST_MAILTRAP_PASSWORD=your_password
 HOST_MAILTRAP_FROM=your_email
 
 #Swagger
-SWAGGER_SERVER_URL=URL_Server/api/
+SWAGGER_SERVER_URL="http://localhost:3000/api"
 
 
 ```
