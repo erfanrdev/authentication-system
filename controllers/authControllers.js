@@ -21,7 +21,7 @@ exports.postSignup = async (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.status(422).json({
+    return res.status(400).json({
       message: errors.array()[0].msg,
       success: false,
     });
@@ -32,7 +32,7 @@ exports.postSignup = async (req, res) => {
       if (err) {
         console.log(err);
         return res
-          .status(409)
+          .status(400)
           .json({ success: false, message: "خطا در ایجاد کد تصادفی رخ داد." });
       }
 
@@ -43,7 +43,7 @@ exports.postSignup = async (req, res) => {
       const userDoc = await User.findOne({ email: email });
 
       if (userDoc) {
-        return res.status(409).json({
+        return res.status(400).json({
           success: false,
           message: "این ایمیل قبلاً ثبت شده است.",
         });
@@ -77,11 +77,11 @@ exports.postSignup = async (req, res) => {
 
       if (!sendEmailTo) {
         return res
-          .status(409)
+          .status(400)
           .json({ success: false, message: "ارسال ایمیل با خطا مواجه شد." });
       }
 
-      res.status(201).json({
+      return res.status(201).json({
         success: true,
         message:
           "حساب کاربری شما با موفقیت ایجاد شد. لطفاً برای تأیید ایمیل خود، تا ۲۴ ساعت آینده صندوق ورودی ایمیلتان را بررسی کنید.",
@@ -102,7 +102,7 @@ exports.postSignin = async (req, res, next) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({
+      return res.status(400).json({
         success: false,
         message: errors.array()[0].msg,
       });
@@ -111,7 +111,7 @@ exports.postSignin = async (req, res, next) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(401).json({
+      return res.status(400).json({
         success: false,
         message: "ایمیل اشتباه است.",
       });
@@ -119,14 +119,14 @@ exports.postSignin = async (req, res, next) => {
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({
+      return res.status(400).json({
         success: false,
         message: "رمز عبور اشتباه است.",
       });
     }
 
     if (!user.isEmailVerified) {
-      res.status(403).json({
+      res.status(400).json({
         success: false,
         message:
           "حساب کاربری شما هنوز تأیید نشده است. لطفاً ایمیل خود را بررسی کنید و از طریق لینک ارسال‌شده، حساب خود را فعال کنید.",
@@ -168,7 +168,7 @@ exports.refreshToken = async (req, res, next) => {
     const { refreshToken } = req.cookies;
 
     if (!refreshToken) {
-      return res.status(401).json({
+      return res.status(400).json({
         success: false,
         message: "توکن تمدید اعتبار (Refresh Token) الزامی است.",
       });
@@ -185,7 +185,7 @@ exports.refreshToken = async (req, res, next) => {
     });
 
     if (!storedToken) {
-      return res.status(401).json({
+      return res.status(400).json({
         success: false,
         message: "توکن تمدید اعتبار نامعتبر است یا اعتبار آن لغو شده است.",
       });
@@ -205,7 +205,7 @@ exports.refreshToken = async (req, res, next) => {
 
     //????
     if (!revokedToken) {
-      return res.status(401).json({
+      return res.status(400).json({
         success: false,
         message: "این توکن تمدید اعتبار قبلاً استفاده شده است.",
       });
@@ -242,7 +242,7 @@ exports.refreshToken = async (req, res, next) => {
     });
   } catch (err) {
     if (err.name === "TokenExpiredError" || err.name === "JsonWebTokenError") {
-      return res.status(401).json({
+      return res.status(400).json({
         success: false,
         message: "توکن تمدید اعتبار نامعتبر است یا منقضی شده است.",
       });
@@ -294,7 +294,7 @@ exports.postLogout = async (req, res, next) => {
         err.name === "TokenExpiredError" ||
         err.name === "JsonWebTokenError"
       ) {
-        return res.status(401).json({
+        return res.status(400).json({
           success: false,
           message: "توکن تمدید اعتبار نامعتبر است یا منقضی شده است.",
         });
@@ -316,7 +316,7 @@ exports.postLogout = async (req, res, next) => {
     );
 
     if (!result) {
-      return res.status(401).json({
+      return res.status(400).json({
         success: false,
         message: "توکن تمدید اعتبار پیدا نشد یا قبلاً باطل شده است.",
       });
@@ -336,7 +336,7 @@ exports.postForgotPassword = async (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      return res.status(422).json({
+      return res.status(400).json({
         message: errors.array()[0].msg,
         success: false,
       });
@@ -346,7 +346,7 @@ exports.postForgotPassword = async (req, res) => {
       if (err) {
         console.log(err);
         return res
-          .status(409)
+          .status(400)
           .json({ success: false, message: "خطا در تولید کد تصادفی رخ داد." });
       }
 
@@ -368,7 +368,7 @@ exports.postForgotPassword = async (req, res) => {
       const result = await user.save();
 
       if (!result) {
-        res.status(409).json({
+        res.status(400).json({
           success: false,
           message:
             "خطا در ذخیره توکن بازیابی رمز عبور یا زمان انقضای آن رخ داد.",
@@ -386,7 +386,7 @@ exports.postForgotPassword = async (req, res) => {
 
       if (!sendEmailTo) {
         return res
-          .status(409)
+          .status(400)
           .json({ success: false, message: "ارسال ایمیل با خطا مواجه شد." });
       }
 
@@ -405,7 +405,7 @@ exports.postResetPassword = async (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      return res.status(422).json({
+      return res.status(400).json({
         message: errors.array()[0].msg,
         success: false,
       });
@@ -469,7 +469,7 @@ exports.postEmailVerify = async (req, res) => {
   const { tokenEmailVerify } = req.params;
 
   if (!tokenEmailVerify) {
-    res.status(400).json({ success: false, message: "توکن ارسال نشده است." });
+    return res.status(400).json({ success: false, message: "توکن ارسال نشده است." });
   }
 
   const hashTokenEmailVerify = crypto

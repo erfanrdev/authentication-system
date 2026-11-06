@@ -1,6 +1,6 @@
 # Authentication System
 
-A RESTful authentication api built with **Node.js**, **Express.js**, and **MongoDB**.
+A RESTful authentication API built with **Node.js**, **Express.js**, and **MongoDB**.
 
 This project provides a secure authentication system with JWT-based authentication, token management, password recovery, and email verification.
 
@@ -18,19 +18,32 @@ This project provides a secure authentication system with JWT-based authenticati
 - Reset Password
 - Email Verification
 - Password Hashing with bcryptjs
+- Interactive API Documentation with Swagger UI
 
-## /api/auth Endpoints
+## API Documentation
+
+This project uses **Swagger UI** to provide interactive API documentation.
+
+After starting the server, you can access the API documentation at:
+
+[http://localhost:3000/api-docs](http://localhost:3000/api-docs)
+
+Through Swagger UI, you can explore the available endpoints, view request and response schemas, and test API requests.
+
+## API Endpoints
+
+Base URL: `/api/auth`
 
 | Method | Endpoint | Description |
 |---|---|---|
 | POST | `/api/auth/signup` | Register a new user |
 | POST | `/api/auth/signin` | Login to an existing account |
 | GET | `/api/auth/me` | Get authenticated user information |
-| POST | `/api/auth//logout` | Logout the user |
-| POST | `/api/auth//refresh-token` | Generate a new access token |
-| POST | `/api/auth//forgot-password` | Request password recovery |
-| POST | `/api/auth//reset-password/:passwordToken` | Reset user password |
-| POST | `/api/auth//email-verify/:tokenEmailVerify` | Verify user email |
+| POST | `/api/auth/logout` | Logout the user |
+| POST | `/api/auth/refresh-token` | Generate a new access token |
+| POST | `/api/auth/forgot-password` | Request password recovery |
+| POST | `/api/auth/reset-password/:passwordToken` | Reset user password |
+| POST | `/api/auth/email-verify/:tokenEmailVerify` | Verify user email |
 
 ## Technologies
 
@@ -42,6 +55,7 @@ This project provides a secure authentication system with JWT-based authenticati
 - **bcryptjs** – Password hashing
 - **Node.js Crypto** – Cryptographic token hashing
 - **Mailtrap** – Email testing and delivery
+- **Swagger UI** – Interactive API documentation
 
 ## Environment Variables
 
@@ -49,7 +63,7 @@ Create a `.env` file in the root directory:
 
 ```env
 # Server
-MONGODB_PORT=3000
+PORT=3000
 NODE_ENV=development
 
 # Database
@@ -70,19 +84,18 @@ HOST_MAILTRAP_PASSWORD=your_password
 HOST_MAILTRAP_FROM=your_email
 ```
 
-
 ## Installation
 
 Clone the repository:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/erfanrdev/authentication-system.git
 ```
 
 Navigate to the project directory:
 
 ```bash
-cd <project-folder>
+cd authentication-system
 ```
 
 Install dependencies:
@@ -93,10 +106,16 @@ npm install
 
 Configure your `.env` file with the required environment variables.
 
-Run the application using the following command:
+Start the application:
 
 ```bash
 node app.js
+```
+
+Once the server is running, open the Swagger documentation:
+
+```text
+http://localhost:3000/api-docs
 ```
 
 ## Security
@@ -105,4 +124,4 @@ node app.js
 - JWT is used for access and refresh token authentication.
 - Cryptographic hashing is used for secure token storage.
 - Sensitive configuration values are managed through environment variables.
-
+- Refresh tokens are managed to support secure token renewal and revocation.
